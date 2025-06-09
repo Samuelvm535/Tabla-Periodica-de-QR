@@ -1,0 +1,430 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla Periódica de QR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
+        .element-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: inherit;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(129, 140, 248, 0.3); 
+            border-radius: 0.75rem; 
+            padding: 0.5rem; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.1); 
+            transition: all 0.3s ease-in-out;
+            cursor: pointer; 
+            min-width: 80px; 
+            height: 120px; 
+            font-size: 0.875rem; 
+            line-height: 1.25rem; 
+            position: relative; 
+        }
+
+        .element-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25), 0 8px 10px rgba(0, 0, 0, 0.1); 
+        }
+
+        .element-card img {
+            width: 60px; 
+            height: 60px;
+            margin-bottom: 4px;
+            border-radius: 0.5rem;
+        }
+
+        
+        .atomic-number {
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            font-size: 0.75rem; 
+            font-weight: bold;
+            color: #E0E7FF; 
+        }
+
+       
+        .periodic-table-grid {
+            display: grid;
+            grid-template-columns: repeat(18, minmax(0, 1fr)); 
+            gap: 0.5rem; 
+            width: 100%;
+        }
+
+      
+        .block-link {
+            background-color: rgba(255, 255, 255, 0.15);
+            font-weight: bold;
+            color: #E0E7FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            grid-column: span 1; 
+            text-align: center;
+            cursor: default; 
+        }
+
+        @media (max-width: 1024px) {
+            .element-card {
+                min-width: 60px;
+                height: 100px;
+                padding: 0.25rem;
+                font-size: 0.75rem;
+            }
+            .element-card img {
+                width: 50px;
+                height: 50px;
+            }
+            .atomic-number {
+                font-size: 0.625rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .periodic-table-grid {
+               
+                overflow-x: auto;
+                justify-content: start; 
+            }
+            .element-card {
+                min-width: 50px; 
+                height: 80px;
+                font-size: 0.6rem;
+                padding: 0.125rem;
+            }
+            .element-card img {
+                width: 40px;
+                height: 40px;
+            }
+            .atomic-number {
+                font-size: 0.5rem;
+            }
+            .block-link {
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-500 to-purple-700 text-white min-h-screen flex flex-col items-center py-8 px-4">
+    <header class="text-center mb-10">
+        <h1 class="text-5xl font-extrabold mb-4 animate-fade-in">Tabla Periódica Interactiva de Elementos con QR</h1>
+        <p class="text-xl text-indigo-100 opacity-90 animate-fade-in-delay">Haz clic en cada elemento para ver un QR más grande.</p>
+    </header>
+
+    <main class="w-full max-w-7xl overflow-x-auto"> 
+        <div id="periodic-table-main" class="periodic-table-grid">
+           
+        </div>
+
+        <div id="periodic-table-f-block" class="periodic-table-grid mt-4 px-10"> 
+           
+        </div>
+    </main>
+
+    <footer class="mt-10 text-center text-indigo-100 opacity-80 text-sm">
+        <p>&copy; 2025 Tabla Periódica de QR. Todos los derechos reservados.</p>
+    </footer>
+
+    <div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg border border-indigo-300 border-opacity-30 rounded-xl p-6 shadow-2xl relative w-full max-w-sm mx-auto flex flex-col items-center">
+            <button id="close-modal-btn" class="absolute top-3 right-3 text-white text-2xl font-bold hover:text-indigo-200">&times;</button>
+            <h3 id="modal-title" class="text-3xl font-extrabold text-white mb-4 text-center"></h3>
+            <img id="modal-qr-img" src="" alt="Código QR Grande" class="w-64 h-64 rounded-lg mb-4 border border-indigo-400 p-1"/>
+            <p id="modal-element-name" class="text-xl text-indigo-100 mb-2 text-center"></p>
+         
+        </div>
+    </div>
+
+    <script>
+     
+        const allElementsData = {
+            1: { symbol: 'H', name: 'Hidrógeno', infografia: 'Infografia_1.html' },
+            2: { symbol: 'He', name: 'Helio', infografia: 'Infografia_2.html' },
+            3: { symbol: 'Li', name: 'Litio', infografia: 'Infografia_3.html' },
+            4: { symbol: 'Be', name: 'Berilio', infografia: 'Infografia_4.html' },
+            5: { symbol: 'B', name: 'Boro', infografia: 'Infografia_5.html' },
+            6: { symbol: 'C', name: 'Carbono', infografia: 'Infografia_6.html' },
+            7: { symbol: 'N', name: 'Nitrógeno', infografia: 'Infografia_7.html' },
+            8: { symbol: 'O', name: 'Oxígeno', infografia: 'Infografia_8.html' },
+            9: { symbol: 'F', name: 'Flúor', infografia: 'Infografia_9.html' },
+            10: { symbol: 'Ne', name: 'Neón', infografia: 'Infografia_10.html' },
+            11: { symbol: 'Na', name: 'Sodio', infografia: 'Infografia_11.html' },
+            12: { symbol: 'Mg', name: 'Magnesio', infografia: 'Infografia_12.html' },
+            13: { symbol: 'Al', name: 'Aluminio', infografia: 'Infografia_13.html' },
+            14: { symbol: 'Si', name: 'Silicio', infografia: 'Infografia_14.html' },
+            15: { symbol: 'P', name: 'Fósforo', infografia: 'Infografia_15.html' },
+            16: { symbol: 'S', name: 'Azufre', infografia: 'Infografia_16.html' },
+            17: { symbol: 'Cl', name: 'Cloro', infografia: 'Infografia_17.html' },
+            18: { symbol: 'Ar', name: 'Argón', infografia: 'Infografia_18.html' },
+            19: { symbol: 'K', name: 'Potasio', infografia: 'Infografia_19.html' },
+            20: { symbol: 'Ca', name: 'Calcio', infografia: 'Infografia_20.html' },
+            21: { symbol: 'Sc', name: 'Escandio', infografia: 'Infografia_21.html' },
+            22: { symbol: 'Ti', name: 'Titanio', infografia: 'Infografia_22.html' },
+            23: { symbol: 'V', name: 'Vanadio', infografia: 'Infografia_23.html' },
+            24: { symbol: 'Cr', name: 'Cromo', infografia: 'Infografia_24.html' },
+            25: { symbol: 'Mn', name: 'Manganeso', infografia: 'Infografia_25.html' },
+            26: { symbol: 'Fe', name: 'Hierro', infografia: 'Infografia_26.html' },
+            27: { symbol: 'Co', name: 'Cobalto', infografia: 'Infografia_27.html' },
+            28: { symbol: 'Ni', name: 'Níquel', infografia: 'Infografia_28.html' },
+            29: { symbol: 'Cu', name: 'Cobre', infografia: 'Infografia_29.html' },
+            30: { symbol: 'Zn', name: 'Zinc', infografia: 'Infografia_30.html' },
+            31: { symbol: 'Ga', name: 'Galio', infografia: 'Infografia_31.html' },
+            32: { symbol: 'Ge', name: 'Germanio', infografia: 'Infografia_32.html' },
+            33: { symbol: 'As', name: 'Arsénico', infografia: 'Infografia_33.html' },
+            34: { symbol: 'Se', name: 'Selenio', infografia: 'Infografia_34.html' },
+            35: { symbol: 'Br', name: 'Bromo', infografia: 'Infografia_35.html' },
+            36: { symbol: 'Kr', name: 'Kriptón', infografia: 'Infografia_36.html' },
+            37: { symbol: 'Rb', name: 'Rubidio', infografia: 'Infografia_37.html' },
+            38: { symbol: 'Sr', name: 'Estroncio', infografia: 'Infografia_38.html' },
+            39: { symbol: 'Y', name: 'Itrio', infografia: 'Infografia_39.html' },
+            40: { symbol: 'Zr', name: 'Zirconio', infografia: 'Infografia_40.html' },
+            41: { symbol: 'Nb', name: 'Niobio', infografia: 'Infografia_41.html' },
+            42: { symbol: 'Mo', name: 'Molibdeno', infografia: 'Infografia_42.html' },
+            43: { symbol: 'Tc', name: 'Tecnecio', infografia: 'Infografia_43.html' },
+            44: { symbol: 'Ru', name: 'Rutenio', infografia: 'Infografia_44.html' },
+            45: { symbol: 'Rh', name: 'Rodio', infografia: 'Infografia_45.html' },
+            46: { symbol: 'Pd', name: 'Paladio', infografia: 'Infografia_46.html' },
+            47: { symbol: 'Ag', name: 'Plata', infografia: 'Infografia_47.html' },
+            48: { symbol: 'Cd', name: 'Cadmio', infografia: 'Infografia_48.html' },
+            49: { symbol: 'In', name: 'Indio', infografia: 'Infografia_49.html' },
+            50: { symbol: 'Sn', name: 'Estaño', infografia: 'Infografia_50.html' },
+            51: { symbol: 'Sb', name: 'Antimonio', infografia: 'Infografia_51.html' },
+            52: { symbol: 'Te', name: 'Telurio', infografia: 'Infografia_52.html' },
+            53: { symbol: 'I', name: 'Yodo', infografia: 'Infografia_53.html' },
+            54: { symbol: 'Xe', name: 'Xenón', infografia: 'Infografia_54.html' },
+            55: { symbol: 'Cs', name: 'Cesio', infografia: 'Infografia_55.html' },
+            56: { symbol: 'Ba', name: 'Bario', infografia: 'Infografia_56.html' },
+            57: { symbol: 'La', name: 'Lantano', infografia: 'Infografia_57.html' },
+            58: { symbol: 'Ce', name: 'Cerio', infografia: 'Infografia_58.html' },
+            59: { symbol: 'Pr', name: 'Praseodimio', infografia: 'Infografia_59.html' },
+            60: { symbol: 'Nd', name: 'Neodimio', infografia: 'Infografia_60.html' },
+            61: { symbol: 'Pm', name: 'Prometio', infografia: 'Infografia_61.html' },
+            62: { symbol: 'Sm', name: 'Samario', infografia: 'Infografia_62.html' },
+            63: { symbol: 'Eu', name: 'Europio', infografia: 'Infografia_63.html' },
+            64: { symbol: 'Gd', name: 'Gadolinio', infografia: 'Infografia_64.html' },
+            65: { symbol: 'Tb', name: 'Terbio', infografia: 'Infografia_65.html' },
+            66: { symbol: 'Dy', name: 'Disprosio', infografia: 'Infografia_66.html' },
+            67: { symbol: 'Ho', name: 'Holmio', infografia: 'Infografia_67.html' },
+            68: { symbol: 'Er', name: 'Erbio', infografia: 'Infografia_68.html' },
+            69: { symbol: 'Tm', name: 'Tulio', infografia: 'Infografia_69.html' },
+            70: { symbol: 'Lu', name: 'Lutecio', infografia: 'Infografia_70.html' },
+            71: { symbol: 'Hf', name: 'Hafnio', infografia: 'Infografia_71.html' },
+            72: { symbol: 'Ta', name: 'Tantalio', infografia: 'Infografia_72.html' },
+            73: { symbol: 'W', name: 'Wolframio', infografia: 'Infografia_73.html' },
+            74: { symbol: 'Re', name: 'Renio', infografia: 'Infografia_74.html' },
+            75: { symbol: 'Os', name: 'Osmio', infografia: 'Infografia_75.html' },
+            76: { symbol: 'Ir', name: 'Iridio', infografia: 'Infografia_76.html' },
+            77: { symbol: 'Pt', name: 'Platino', infografia: 'Infografia_77.html' },
+            78: { symbol: 'Au', name: 'Oro', infografia: 'Infografia_78.html' },
+            79: { symbol: 'Hg', name: 'Mercurio', infografia: 'Infografia_79.html' },
+            80: { symbol: 'Tl', name: 'Talio', infografia: 'Infografia_80.html' },
+            81: { symbol: 'Pb', name: 'Plomo', infografia: 'Infografia_81.html' },
+            82: { symbol: 'Bi', name: 'Bismuto', infografia: 'Infografia_82.html' },
+            83: { symbol: 'Po', name: 'Polonio', infografia: 'Infografia_83.html' },
+            84: { symbol: 'At', name: 'Astato', infografia: 'Infografia_84.html' },
+            85: { symbol: 'Fr', name: 'Francio', infografia: 'Infografia_85.html' },
+            86: { symbol: 'Ra', name: 'Radio', infografia: 'Infografia_86.html' },
+            87: { symbol: 'Ac', name: 'Actinio', infografia: 'Infografia_87.html' },
+            88: { symbol: 'Th', name: 'Torio', infografia: 'Infografia_88.html' },
+            89: { symbol: 'Pa', name: 'Protactinio', infografia: 'Infografia_89.html' },
+            90: { symbol: 'U', name: 'Uranio', infografia: 'Infografia_90.html' },
+            91: { symbol: 'Np', name: 'Neptunio', infografia: 'Infografia_91.html' },
+            92: { symbol: 'Pu', name: 'Plutonio', infografia: 'Infografia_92.html' },
+            93: { symbol: 'Am', name: 'Americio', infografia: 'Infografia_93.html' },
+            94: { symbol: 'Cm', name: 'Curio', infografia: 'Infografia_94.html' },
+            95: { symbol: 'Bk', name: 'Berkelio', infografia: 'Infografia_95.html' },
+            96: { symbol: 'Cf', name: 'Californio', infografia: 'Infografia_96.html' },
+            97: { symbol: 'Es', name: 'Einstenio', infografia: 'Infografia_97.html' },
+            98: { symbol: 'Fm', name: 'Fermio', infografia: 'Infografia_98.html' },
+            99: { symbol: 'Md', name: 'Mendelevio', infografia: 'Infografia_99.html' },
+            100: { symbol: 'No', name: 'Nobelio', infografia: 'Infografia_100.html' },
+            101: { symbol: 'Lr', name: 'Lawrencio', infografia: 'Infografia_101.html' },
+            102: { symbol: 'Rf', name: 'Rutherfordio', infografia: 'Infografia_102.html' },
+            103: { symbol: 'Db', name: 'Dubnio', infografia: 'Infografia_103.html' },
+            104: { symbol: 'Sg', name: 'Seaborgio', infografia: 'Infografia_104.html' },
+            105: { symbol: 'Bh', name: 'Bohrio', infografia: 'Infografia_105.html' },
+            106: { symbol: 'Hs', name: 'Hassio', infografia: 'Infografia_106.html' },
+            107: { symbol: 'Mt', name: 'Meitnerio', infografia: 'Infografia_107.html' },
+            108: { symbol: 'Ds', name: 'Darmstadtio', infografia: 'Infografia_108.html' },
+            109: { symbol: 'Rg', name: 'Roentgenio', infografia: 'Infografia_109.html' },
+            110: { symbol: 'Cn', name: 'Copernicio', infografia: 'Infografia_110.html' },
+            111: { symbol: 'Nh', name: 'Nihonio', infografia: 'Infografia_111.html' },
+            112: { symbol: 'Fl', name: 'Flerovio', infografia: 'Infografia_112.html' },
+            113: { symbol: 'Mc', name: 'Moscovio', infografia: 'Infografia_113.html' },
+            114: { symbol: 'Lv', name: 'Livermorio', infografia: 'Infografia_114.html' },
+            115: { symbol: 'Ts', name: 'Tenesino', infografia: 'Infografia_115.html' },
+            116: { symbol: 'Og', name: 'Oganesón', infografia: 'Infografia_116.html' },
+            117: { symbol: 'Cn', name: 'Copernicio', infografia: 'Infografia_117.html' },
+            118: { symbol: 'Og', name: 'Oganesón', infografia: 'Infografia_118.html' }
+        };
+
+        const periodicTableMain = document.getElementById('periodic-table-main');
+        const periodicTableFBlock = document.getElementById('periodic-table-f-block');
+        const baseUrl = "https://samuelvm535.github.io/Tabla-Periodica-de-QR/"; 
+
+        const qrModal = document.getElementById('qr-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalQrImg = document.getElementById('modal-qr-img');
+        const modalElementName = document.getElementById('modal-element-name');
+
+      
+        function createElementCard(num, symbol, name, infografiaLink, extraClass = '') {
+            const elementDiv = document.createElement('div');
+            elementDiv.className = `element-card ${extraClass}`;
+
+            if (num && !isNaN(parseInt(num))) { 
+                elementDiv.setAttribute('data-num', num);
+                elementDiv.setAttribute('data-symbol', symbol);
+                elementDiv.setAttribute('data-name', name);
+                if (infografiaLink) {
+                    elementDiv.setAttribute('data-infografia', infografiaLink);
+                }
+            }
+            
+            let qrCodeHtml = '';
+            if (infografiaLink) {
+                const fullUrl = `${baseUrl}${infografiaLink}`;
+                const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(fullUrl)}&size=150x150`;
+                qrCodeHtml = `<img src="${qrCodeUrl}" alt="QR código ${name}"/>`;
+            }
+
+            elementDiv.innerHTML = `
+                <div class="atomic-number">${num}</div>
+                ${qrCodeHtml}
+                <div class="font-bold text-xl text-indigo-50">${symbol}</div>
+                <div class="text-sm text-indigo-200 leading-tight">${name}</div>
+            `;
+            return elementDiv;
+        }
+
+   
+        function openQRModal(elementData) {
+            if (elementData.infografia) {
+                const fullUrl = `${baseUrl}${elementData.infografia}`;
+                const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(fullUrl)}&size=250x250`; 
+
+                modalTitle.textContent = `${elementData.symbol} (${elementData.num})`;
+                modalQrImg.src = qrCodeUrl;
+                modalQrImg.alt = `Código QR ${elementData.name}`;
+                modalElementName.textContent = elementData.name;
+                qrModal.classList.remove('hidden');
+            }
+        }
+        function closeQRModal() {
+            qrModal.classList.add('hidden');
+        }
+
+        closeModalBtn.addEventListener('click', closeQRModal);
+
+        const mainTableGridPositions = {
+            1: { row: 1, col: 1 }, 2: { row: 1, col: 18 },
+            3: { row: 2, col: 1 }, 4: { row: 2, col: 2 }, 5: { row: 2, col: 13 }, 6: { row: 2, col: 14 }, 7: { row: 2, col: 15 }, 8: { row: 2, col: 16 }, 9: { row: 2, col: 17 }, 10: { row: 2, col: 18 },
+            11: { row: 3, col: 1 }, 12: { row: 3, col: 2 }, 13: { row: 3, col: 13 }, 14: { row: 3, col: 14 }, 15: { row: 3, col: 15 }, 16: { row: 3, col: 16 }, 17: { row: 3, col: 17 }, 18: { row: 3, col: 18 },
+            19: { row: 4, col: 1 }, 20: { row: 4, col: 2 },
+            21: { row: 4, col: 3 }, 22: { row: 4, col: 4 }, 23: { row: 4, col: 5 }, 24: { row: 4, col: 6 }, 25: { row: 4, col: 7 }, 26: { row: 4, col: 8 }, 27: { row: 4, col: 9 }, 28: { row: 4, col: 10 }, 29: { row: 4, col: 11 }, 30: { row: 4, col: 12 },
+            31: { row: 4, col: 13 }, 32: { row: 4, col: 14 }, 33: { row: 4, col: 15 }, 34: { row: 4, col: 16 }, 35: { row: 4, col: 17 }, 36: { row: 4, col: 18 },
+            37: { row: 5, col: 1 }, 38: { row: 5, col: 2 },
+            39: { row: 5, col: 3 }, 40: { row: 5, col: 4 }, 41: { row: 5, col: 5 }, 42: { row: 5, col: 6 }, 43: { row: 5, col: 7 }, 44: { row: 5, col: 8 }, 45: { row: 5, col: 9 }, 46: { row: 5, col: 10 }, 47: { row: 5, col: 11 }, 48: { row: 5, col: 12 },
+            49: { row: 5, col: 13 }, 50: { row: 5, col: 14 }, 51: { row: 5, col: 15 }, 52: { row: 5, col: 16 }, 53: { row: 5, col: 17 }, 54: { row: 5, col: 18 },
+            55: { row: 6, col: 1 }, 56: { row: 6, col: 2 },
+            'lanthanide_placeholder': { row: 6, col: 3, symbol: '57-70', name: 'Lantánidos' },
+            71: { row: 6, col: 4 }, 72: { row: 6, col: 5 }, 73: { row: 6, col: 6 }, 74: { row: 6, col: 7 }, 75: { row: 6, col: 8 }, 76: { row: 6, col: 9 }, 77: { row: 6, col: 10 }, 78: { row: 6, col: 11 }, 79: { row: 6, col: 12 },
+            80: { row: 6, col: 13 }, 81: { row: 6, col: 14 }, 82: { row: 6, col: 15 }, 83: { row: 6, col: 16 }, 84: { row: 6, col: 17 },
+            85: { row: 7, col: 1 }, 86: { row: 7, col: 2 },
+            'actinide_placeholder': { row: 7, col: 3, symbol: '87-101', name: 'Actínidos' }, 
+            104: { row: 7, col: 4 }, 105: { row: 7, col: 5 }, 106: { row: 7, col: 6 }, 107: { row: 7, col: 7 }, 108: { row: 7, col: 8 }, 109: { row: 7, col: 9 }, 110: { row: 7, col: 10 }, 111: { row: 7, col: 11 },
+            112: { row: 7, col: 12 }, 
+            113: { row: 7, col: 13 }, 
+            114: { row: 7, col: 14 }, 
+            115: { row: 7, col: 15 }, 
+            116: { row: 7, col: 16 }, 
+            117: { row: 7, col: 17 }, 
+            118: { row: 7, col: 18 } 
+        };
+
+        const fBlockGridPositions = {
+            57: { row: 8, col: 3 }, 58: { row: 8, col: 4 }, 59: { row: 8, col: 5 }, 60: { row: 8, col: 6 }, 61: { row: 8, col: 7 },
+            62: { row: 8, col: 8 }, 63: { row: 8, col: 9 }, 64: { row: 8, col: 10 }, 65: { row: 8, col: 11 }, 66: { row: 8, col: 12 },
+            67: { row: 8, col: 13 }, 68: { row: 8, col: 14 }, 69: { row: 8, col: 15 }, 70: { row: 8, col: 16 },
+            
+            87: { row: 9, col: 3 }, 88: { row: 9, col: 4 }, 89: { row: 9, col: 5 }, 90: { row: 9, col: 6 }, 91: { row: 9, col: 7 },
+            92: { row: 9, col: 8 }, 93: { row: 9, col: 9 }, 94: { row: 9, col: 10 }, 95: { row: 9, col: 11 },
+            96: { row: 9, col: 12 }, 97: { row: 9, col: 13 }, 98: { row: 9, col: 14 }, 99: { row: 9, col: 15 }, 100: { row: 9, col: 16 }, 101: { row: 9, col: 17 },
+        };
+
+        for (const numKey in mainTableGridPositions) {
+            const placement = mainTableGridPositions[numKey];
+            let elementDiv;
+
+            if (numKey === 'lanthanide_placeholder' || numKey === 'actinide_placeholder') {
+                elementDiv = createElementCard(placement.symbol, placement.symbol, placement.name, null, 'block-link');
+            } else {
+                const num = parseInt(numKey);
+                const data = allElementsData[num];
+                if (data) {
+                    elementDiv = createElementCard(num, data.symbol, data.name, data.infografia);
+                } else {
+                    elementDiv = createElementCard('', '', '', null, 'bg-transparent border-dashed border-gray-400 opacity-50');
+                }
+            }
+            elementDiv.style.gridRowStart = placement.row;
+            elementDiv.style.gridColumnStart = placement.col;
+            periodicTableMain.appendChild(elementDiv);
+        }
+
+        // Renderizar elementos del bloque f
+        for (const numKey in fBlockGridPositions) {
+            const num = parseInt(numKey);
+            const data = allElementsData[num];
+            const placement = fBlockGridPositions[numKey];
+
+            if (data) {
+                const elementDiv = createElementCard(num, data.symbol, data.name, data.infografia);
+                elementDiv.style.gridRowStart = placement.row;
+                elementDiv.style.gridColumnStart = placement.col;
+                periodicTableFBlock.appendChild(elementDiv);
+            }
+        }
+
+        periodicTableMain.addEventListener('click', (event) => {
+            const clickedCard = event.target.closest('.element-card');
+            if (clickedCard && !clickedCard.classList.contains('block-link')) {
+                const num = clickedCard.getAttribute('data-num');
+                const symbol = clickedCard.getAttribute('data-symbol');
+                const name = clickedCard.getAttribute('data-name');
+                const infografia = clickedCard.getAttribute('data-infografia');
+                
+                if (num && infografia) {
+                    openQRModal({ num: num, symbol: symbol, name: name, infografia: infografia });
+                }
+            }
+        });
+
+        periodicTableFBlock.addEventListener('click', (event) => {
+            const clickedCard = event.target.closest('.element-card');
+            if (clickedCard && !clickedCard.classList.contains('block-link')) {
+                const num = clickedCard.getAttribute('data-num');
+                const symbol = clickedCard.getAttribute('data-symbol');
+                const name = clickedCard.getAttribute('data-name');
+                const infografia = clickedCard.getAttribute('data-infografia');
+                
+                if (num && infografia) {
+                    openQRModal({ num: num, symbol: symbol, name: name, infografia: infografia });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
