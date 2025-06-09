@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabla Periódica de QR</title>
-    <!-- Incluye Tailwind CSS desde CDN para estilos modernos y responsivos -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos personalizados para la fuente Inter (se recomienda cargarla desde Google Fonts para producción) */
+
         body {
             font-family: "Inter", sans-serif;
         }
-
-        /* Estilos base para cada tarjeta de elemento */
         .element-card {
             display: flex;
             flex-direction: column;
@@ -22,64 +19,62 @@
             color: inherit;
             background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(129, 140, 248, 0.3); /* indigo-300 con opacidad */
-            border-radius: 0.75rem; /* rounded-xl */
-            padding: 0.5rem; /* p-2 para un ajuste más compacto en la tabla */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-lg */
+            border: 1px solid rgba(129, 140, 248, 0.3); 
+            border-radius: 0.75rem; 
+            padding: 0.5rem; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.1); 
             transition: all 0.3s ease-in-out;
-            cursor: pointer; /* Cambiado a cursor de puntero para indicar que es clicable */
-            min-width: 80px; /* Ancho mínimo para mantener la legibilidad */
-            height: 120px; /* Altura fija para uniformidad en la tabla */
-            font-size: 0.875rem; /* text-sm */
-            line-height: 1.25rem; /* leading-tight */
-            position: relative; /* Para el número atómico */
+            cursor: pointer; 
+            min-width: 80px; 
+            height: 120px; 
+            font-size: 0.875rem; 
+            line-height: 1.25rem; 
+            position: relative; 
         }
 
         .element-card:hover {
             transform: scale(1.05);
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25), 0 8px 10px rgba(0, 0, 0, 0.1); /* shadow-2xl */
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25), 0 8px 10px rgba(0, 0, 0, 0.1); 
         }
 
-        /* Estilo para la imagen QR dentro de la tarjeta */
         .element-card img {
-            width: 60px; /* Tamaño más pequeño para ajustarse a la cuadrícula de la tabla */
+            width: 60px; 
             height: 60px;
             margin-bottom: 4px;
-            border-radius: 0.5rem; /* rounded-lg */
+            border-radius: 0.5rem;
         }
 
-        /* Estilo para el número atómico en la esquina superior izquierda */
+        
         .atomic-number {
             position: absolute;
             top: 4px;
             left: 6px;
-            font-size: 0.75rem; /* text-xs */
+            font-size: 0.75rem; 
             font-weight: bold;
-            color: #E0E7FF; /* indigo-100 */
+            color: #E0E7FF; 
         }
 
-        /* Definiciones de columnas de la cuadrícula para el diseño de la tabla periódica */
+       
         .periodic-table-grid {
             display: grid;
-            grid-template-columns: repeat(18, minmax(0, 1fr)); /* 18 columnas de igual tamaño */
-            gap: 0.5rem; /* gap-2 */
+            grid-template-columns: repeat(18, minmax(0, 1fr)); 
+            gap: 0.5rem; 
             width: 100%;
         }
 
-        /* Estilos específicos para las celdas de "bloque" (Lantánidos/Actínidos) */
+      
         .block-link {
             background-color: rgba(255, 255, 255, 0.15);
             font-weight: bold;
-            color: #E0E7FF; /* indigo-100 */
+            color: #E0E7FF;
             display: flex;
             align-items: center;
             justify-content: center;
-            grid-column: span 1; /* Ocupa 1 columna */
+            grid-column: span 1; 
             text-align: center;
-            cursor: default; /* Sin cursor de puntero para los marcadores de bloque */
+            cursor: default; 
         }
 
-        /* Ajustes responsivos */
         @media (max-width: 1024px) {
             .element-card {
                 min-width: 60px;
@@ -98,12 +93,12 @@
 
         @media (max-width: 768px) {
             .periodic-table-grid {
-                /* Permitir desplazamiento horizontal en pantallas pequeñas para mantener la estructura */
+               
                 overflow-x: auto;
-                justify-content: start; /* Alinea los elementos al inicio */
+                justify-content: start; 
             }
             .element-card {
-                min-width: 50px; /* Hacer los elementos más pequeños */
+                min-width: 50px; 
                 height: 80px;
                 font-size: 0.6rem;
                 padding: 0.125rem;
@@ -116,7 +111,7 @@
                 font-size: 0.5rem;
             }
             .block-link {
-                height: 80px; /* Ajustar altura para mantener consistencia */
+                height: 80px;
             }
         }
     </style>
@@ -127,13 +122,13 @@
         <p class="text-xl text-indigo-100 opacity-90 animate-fade-in-delay">Haz clic en cada elemento para ver un QR más grande.</p>
     </header>
 
-    <main class="w-full max-w-7xl overflow-x-auto"> <!-- Añadido overflow-x-auto para desplazamiento horizontal -->
+    <main class="w-full max-w-7xl overflow-x-auto"> 
         <div id="periodic-table-main" class="periodic-table-grid">
-            <!-- Los elementos se generarán aquí con JavaScript -->
+           
         </div>
 
-        <div id="periodic-table-f-block" class="periodic-table-grid mt-4 px-10"> <!-- F-block elements below -->
-            <!-- Los elementos del bloque f (Lantánidos y Actínidos) se generarán aquí -->
+        <div id="periodic-table-f-block" class="periodic-table-grid mt-4 px-10"> 
+           
         </div>
     </main>
 
@@ -141,22 +136,18 @@
         <p>&copy; 2025 Tabla Periódica de QR. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Modal para mostrar el QR ampliado -->
     <div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden p-4">
         <div class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg border border-indigo-300 border-opacity-30 rounded-xl p-6 shadow-2xl relative w-full max-w-sm mx-auto flex flex-col items-center">
             <button id="close-modal-btn" class="absolute top-3 right-3 text-white text-2xl font-bold hover:text-indigo-200">&times;</button>
             <h3 id="modal-title" class="text-3xl font-extrabold text-white mb-4 text-center"></h3>
             <img id="modal-qr-img" src="" alt="Código QR Grande" class="w-64 h-64 rounded-lg mb-4 border border-indigo-400 p-1"/>
             <p id="modal-element-name" class="text-xl text-indigo-100 mb-2 text-center"></p>
-            <!-- El enlace directo a la infografía ha sido eliminado según tu solicitud -->
+         
         </div>
     </div>
 
     <script>
-        // Datos de todos los elementos, incluyendo los nuevos proporcionados por el usuario.
-        // Se mantiene la correspondencia entre el número atómico y el nombre/símbolo/infografía
-        // que el usuario ha especificado, aunque esto pueda diferir de la convención estándar
-        // para algunos elementos (ej. Cn para 117).
+     
         const allElementsData = {
             1: { symbol: 'H', name: 'Hidrógeno', infografia: 'Infografia_1.html' },
             2: { symbol: 'He', name: 'Helio', infografia: 'Infografia_2.html' },
@@ -280,30 +271,20 @@
 
         const periodicTableMain = document.getElementById('periodic-table-main');
         const periodicTableFBlock = document.getElementById('periodic-table-f-block');
-        const baseUrl = "https://samuelvm535.github.io/Tabla-Periodica-de-QR/"; // Base URL for infografías
+        const baseUrl = "https://samuelvm535.github.io/Tabla-Periodica-de-QR/"; 
 
-        // Referencias a los elementos del modal
         const qrModal = document.getElementById('qr-modal');
         const closeModalBtn = document.getElementById('close-modal-btn');
         const modalTitle = document.getElementById('modal-title');
         const modalQrImg = document.getElementById('modal-qr-img');
         const modalElementName = document.getElementById('modal-element-name');
 
-        /**
-         * Crea una tarjeta de elemento HTML.
-         * @param {number|string} num - El número atómico o identificador de bloque.
-         * @param {string} symbol - El símbolo del elemento.
-         * @param {string} name - El nombre del elemento.
-         * @param {string|null} infografiaLink - El nombre del archivo de la infografía (ej. 'Infografia_1.html').
-         * @param {string} extraClass - Clases CSS adicionales.
-         * @returns {HTMLDivElement} La tarjeta del elemento como un div.
-         */
+      
         function createElementCard(num, symbol, name, infografiaLink, extraClass = '') {
             const elementDiv = document.createElement('div');
             elementDiv.className = `element-card ${extraClass}`;
 
-            // Añade atributos de datos para que el modal pueda usarlos
-            if (num && !isNaN(parseInt(num))) { // Solo para elementos con número atómico válido
+            if (num && !isNaN(parseInt(num))) { 
                 elementDiv.setAttribute('data-num', num);
                 elementDiv.setAttribute('data-symbol', symbol);
                 elementDiv.setAttribute('data-name', name);
@@ -328,34 +309,25 @@
             return elementDiv;
         }
 
-        /**
-         * Abre el modal con la información del QR ampliado y el nombre del elemento.
-         * @param {object} elementData - Objeto con los datos del elemento (num, symbol, name, infografia).
-         */
+   
         function openQRModal(elementData) {
             if (elementData.infografia) {
                 const fullUrl = `${baseUrl}${elementData.infografia}`;
-                const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(fullUrl)}&size=250x250`; // QR más grande
+                const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(fullUrl)}&size=250x250`; 
 
                 modalTitle.textContent = `${elementData.symbol} (${elementData.num})`;
                 modalQrImg.src = qrCodeUrl;
                 modalQrImg.alt = `Código QR ${elementData.name}`;
                 modalElementName.textContent = elementData.name;
-                qrModal.classList.remove('hidden'); // Muestra el modal
+                qrModal.classList.remove('hidden');
             }
         }
-
-        /**
-         * Cierra el modal.
-         */
         function closeQRModal() {
-            qrModal.classList.add('hidden'); // Oculta el modal
+            qrModal.classList.add('hidden');
         }
 
-        // Asigna el evento de clic al botón de cerrar modal
         closeModalBtn.addEventListener('click', closeQRModal);
 
-        // Definiciones de posición de la cuadrícula para el bloque principal de la tabla periódica
         const mainTableGridPositions = {
             1: { row: 1, col: 1 }, 2: { row: 1, col: 18 },
             3: { row: 2, col: 1 }, 4: { row: 2, col: 2 }, 5: { row: 2, col: 13 }, 6: { row: 2, col: 14 }, 7: { row: 2, col: 15 }, 8: { row: 2, col: 16 }, 9: { row: 2, col: 17 }, 10: { row: 2, col: 18 },
@@ -367,22 +339,21 @@
             39: { row: 5, col: 3 }, 40: { row: 5, col: 4 }, 41: { row: 5, col: 5 }, 42: { row: 5, col: 6 }, 43: { row: 5, col: 7 }, 44: { row: 5, col: 8 }, 45: { row: 5, col: 9 }, 46: { row: 5, col: 10 }, 47: { row: 5, col: 11 }, 48: { row: 5, col: 12 },
             49: { row: 5, col: 13 }, 50: { row: 5, col: 14 }, 51: { row: 5, col: 15 }, 52: { row: 5, col: 16 }, 53: { row: 5, col: 17 }, 54: { row: 5, col: 18 },
             55: { row: 6, col: 1 }, 56: { row: 6, col: 2 },
-            'lanthanide_placeholder': { row: 6, col: 3, symbol: '57-70', name: 'Lantánidos' }, // Marcador para los Lantánidos
+            'lanthanide_placeholder': { row: 6, col: 3, symbol: '57-70', name: 'Lantánidos' },
             71: { row: 6, col: 4 }, 72: { row: 6, col: 5 }, 73: { row: 6, col: 6 }, 74: { row: 6, col: 7 }, 75: { row: 6, col: 8 }, 76: { row: 6, col: 9 }, 77: { row: 6, col: 10 }, 78: { row: 6, col: 11 }, 79: { row: 6, col: 12 },
             80: { row: 6, col: 13 }, 81: { row: 6, col: 14 }, 82: { row: 6, col: 15 }, 83: { row: 6, col: 16 }, 84: { row: 6, col: 17 },
             85: { row: 7, col: 1 }, 86: { row: 7, col: 2 },
-            'actinide_placeholder': { row: 7, col: 3, symbol: '87-101', name: 'Actínidos' }, // Marcador para los Actínidos
+            'actinide_placeholder': { row: 7, col: 3, symbol: '87-101', name: 'Actínidos' }, 
             104: { row: 7, col: 4 }, 105: { row: 7, col: 5 }, 106: { row: 7, col: 6 }, 107: { row: 7, col: 7 }, 108: { row: 7, col: 8 }, 109: { row: 7, col: 9 }, 110: { row: 7, col: 10 }, 111: { row: 7, col: 11 },
-            112: { row: 7, col: 12 }, // Flerovio
-            113: { row: 7, col: 13 }, // Moscovio
-            114: { row: 7, col: 14 }, // Livermorio
-            115: { row: 7, col: 15 }, // Tenesino
-            116: { row: 7, col: 16 }, // Oganesón
-            117: { row: 7, col: 17 }, // Copernicio (según los datos del usuario)
-            118: { row: 7, col: 18 }  // Oganesón (según los datos del usuario)
+            112: { row: 7, col: 12 }, 
+            113: { row: 7, col: 13 }, 
+            114: { row: 7, col: 14 }, 
+            115: { row: 7, col: 15 }, 
+            116: { row: 7, col: 16 }, 
+            117: { row: 7, col: 17 }, 
+            118: { row: 7, col: 18 } 
         };
 
-        // Definiciones de posición de la cuadrícula para los elementos del bloque f (Lantánidos y Actínidos)
         const fBlockGridPositions = {
             57: { row: 8, col: 3 }, 58: { row: 8, col: 4 }, 59: { row: 8, col: 5 }, 60: { row: 8, col: 6 }, 61: { row: 8, col: 7 },
             62: { row: 8, col: 8 }, 63: { row: 8, col: 9 }, 64: { row: 8, col: 10 }, 65: { row: 8, col: 11 }, 66: { row: 8, col: 12 },
@@ -393,7 +364,6 @@
             96: { row: 9, col: 12 }, 97: { row: 9, col: 13 }, 98: { row: 9, col: 14 }, 99: { row: 9, col: 15 }, 100: { row: 9, col: 16 }, 101: { row: 9, col: 17 },
         };
 
-        // Renderizar elementos del bloque principal
         for (const numKey in mainTableGridPositions) {
             const placement = mainTableGridPositions[numKey];
             let elementDiv;
@@ -406,7 +376,6 @@
                 if (data) {
                     elementDiv = createElementCard(num, data.symbol, data.name, data.infografia);
                 } else {
-                    // Si no hay datos para un número atómico, crear una celda vacía o un marcador
                     elementDiv = createElementCard('', '', '', null, 'bg-transparent border-dashed border-gray-400 opacity-50');
                 }
             }
@@ -429,34 +398,28 @@
             }
         }
 
-        // Agrega un escuchador de eventos de clic a la tabla principal (utilizando delegación de eventos)
         periodicTableMain.addEventListener('click', (event) => {
             const clickedCard = event.target.closest('.element-card');
-            // Asegúrate de que se hizo clic en una tarjeta de elemento y que no es un marcador de bloque
             if (clickedCard && !clickedCard.classList.contains('block-link')) {
                 const num = clickedCard.getAttribute('data-num');
                 const symbol = clickedCard.getAttribute('data-symbol');
                 const name = clickedCard.getAttribute('data-name');
                 const infografia = clickedCard.getAttribute('data-infografia');
                 
-                // Abre el modal solo si hay datos completos del elemento y una infografía
                 if (num && infografia) {
                     openQRModal({ num: num, symbol: symbol, name: name, infografia: infografia });
                 }
             }
         });
 
-        // Agrega un escuchador de eventos de clic al bloque f (utilizando delegación de eventos)
         periodicTableFBlock.addEventListener('click', (event) => {
             const clickedCard = event.target.closest('.element-card');
-            // Asegúrate de que se hizo clic en una tarjeta de elemento y que no es un marcador de bloque
             if (clickedCard && !clickedCard.classList.contains('block-link')) {
                 const num = clickedCard.getAttribute('data-num');
                 const symbol = clickedCard.getAttribute('data-symbol');
                 const name = clickedCard.getAttribute('data-name');
                 const infografia = clickedCard.getAttribute('data-infografia');
                 
-                // Abre el modal solo si hay datos completos del elemento y una infografía
                 if (num && infografia) {
                     openQRModal({ num: num, symbol: symbol, name: name, infografia: infografia });
                 }
