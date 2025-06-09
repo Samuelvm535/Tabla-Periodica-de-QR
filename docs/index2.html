@@ -1,120 +1,129 @@
  <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabla Periódica de QR</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            font-family: "Inter", sans-serif;
-        }
-        .element-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: inherit;
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(129, 140, 248, 0.3); 
-            border-radius: 0.75rem; 
-            padding: 0.5rem; 
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.1); 
-            transition: all 0.3s ease-in-out;
-            cursor: pointer; 
-            min-width: 80px; 
-            height: 120px; 
-            font-size: 0.875rem; 
-            line-height: 1.25rem; 
-            position: relative; 
-        }
+  <title>Tabla Periódica de QR</title>
 
-        .element-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25), 0 8px 10px rgba(0, 0, 0, 0.1); 
-        }
+  <!-- SEO básico -->
+  <meta name="description" content="Tabla periódica interactiva con códigos QR y enlaces a infografías educativas sobre los 118 elementos químicos.">
+  <meta name="keywords" content="tabla periódica, elementos químicos, infografía, QR, química, educación, ciencia">
+  <meta name="author" content="Samuel VM">
+  <meta name="robots" content="index, follow">
 
-        .element-card img {
-            width: 60px; 
-            height: 60px;
-            margin-bottom: 4px;
-            border-radius: 0.5rem;
-        }
+  <!-- Verificación de Google Search Console -->
+  <meta name="google-site-verification" content="7OfKk3Vvf8O2wdGM4KYVN1HsItPDQOXGluoM887Q6PQ" />
 
-        
-        .atomic-number {
-            position: absolute;
-            top: 4px;
-            left: 6px;
-            font-size: 0.75rem; 
-            font-weight: bold;
-            color: #E0E7FF; 
-        }
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-       
-        .periodic-table-grid {
-            display: grid;
-            grid-template-columns: repeat(18, minmax(0, 1fr)); 
-            gap: 0.5rem; 
-            width: 100%;
-        }
+  <!-- Estilos personalizados -->
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+    }
+    .element-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: inherit;
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(129, 140, 248, 0.3);
+      border-radius: 0.75rem;
+      padding: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      min-width: 80px;
+      height: 120px;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      position: relative;
+    }
 
-      
-        .block-link {
-            background-color: rgba(255, 255, 255, 0.15);
-            font-weight: bold;
-            color: #E0E7FF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            grid-column: span 1; 
-            text-align: center;
-            cursor: default; 
-        }
+    .element-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25), 0 8px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        @media (max-width: 1024px) {
-            .element-card {
-                min-width: 60px;
-                height: 100px;
-                padding: 0.25rem;
-                font-size: 0.75rem;
-            }
-            .element-card img {
-                width: 50px;
-                height: 50px;
-            }
-            .atomic-number {
-                font-size: 0.625rem;
-            }
-        }
+    .element-card img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 4px;
+      border-radius: 0.5rem;
+    }
 
-        @media (max-width: 768px) {
-            .periodic-table-grid {
-               
-                overflow-x: auto;
-                justify-content: start; 
-            }
-            .element-card {
-                min-width: 50px; 
-                height: 80px;
-                font-size: 0.6rem;
-                padding: 0.125rem;
-            }
-            .element-card img {
-                width: 40px;
-                height: 40px;
-            }
-            .atomic-number {
-                font-size: 0.5rem;
-            }
-            .block-link {
-                height: 80px;
-            }
-        }
-    </style>
+    .atomic-number {
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #E0E7FF;
+    }
+
+    .periodic-table-grid {
+      display: grid;
+      grid-template-columns: repeat(18, minmax(0, 1fr));
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .block-link {
+      background-color: rgba(255, 255, 255, 0.15);
+      font-weight: bold;
+      color: #E0E7FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      grid-column: span 1;
+      text-align: center;
+      cursor: default;
+    }
+
+    @media (max-width: 1024px) {
+      .element-card {
+        min-width: 60px;
+        height: 100px;
+        padding: 0.25rem;
+        font-size: 0.75rem;
+      }
+      .element-card img {
+        width: 50px;
+        height: 50px;
+      }
+      .atomic-number {
+        font-size: 0.625rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .periodic-table-grid {
+        overflow-x: auto;
+        justify-content: start;
+      }
+      .element-card {
+        min-width: 50px;
+        height: 80px;
+        font-size: 0.6rem;
+        padding: 0.125rem;
+      }
+      .element-card img {
+        width: 40px;
+        height: 40px;
+      }
+      .atomic-number {
+        font-size: 0.5rem;
+      }
+      .block-link {
+        height: 80px;
+      }
+    }
+  </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-500 to-purple-700 text-white min-h-screen flex flex-col items-center py-8 px-4">
     <header class="text-center mb-10">
